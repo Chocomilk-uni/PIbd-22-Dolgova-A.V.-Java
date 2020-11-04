@@ -5,7 +5,7 @@ public class Doors {
     private NumberOfDoors doorsNumber;
 
     //Открытое числовое свойство, через к-рое можно в закрытое поле занести значение
-    public void setDoorsNumber(int number) { //открытое числ. свойство, через к-рого можно в закр. поле занести значение
+    public void setDoorsNumber(int number) {
         this.doorsNumber = NumberOfDoors.getNumber(number);
     }
 
