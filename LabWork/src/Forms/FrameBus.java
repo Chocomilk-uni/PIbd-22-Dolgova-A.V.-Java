@@ -14,7 +14,7 @@ public class FrameBus {
     private final JComboBox<String> listNumberOfDoors;
     private final JComboBox<String> listAdditionalElems;
 
-    public void setBus(Transport bus) {
+    public void initBus(Transport bus) {
         bus.setPosition((int)(Math.random() * 100 + 10), (int) (Math.random() * (150 - 130) + 130), frame.getWidth(), frame.getHeight());
         panelBus.initBus(bus);
         frame.repaint();
@@ -66,10 +66,8 @@ public class FrameBus {
         listAdditionalElems = new JComboBox<>(new String[]{"Прямоугольная форма", "Треугольная форма", "Загруглённая форма"});
         frame.getContentPane().add(listAdditionalElems);
         listAdditionalElems.setBounds(12, 75, 150, 30);
-    }
 
-    public void addBusPanel(PanelBus panel) {
-        panelBus = panel;
+        panelBus = new PanelBus();
         frame.getContentPane().add(panelBus);
         panelBus.setBounds(0, 0, 900, 500);
         frame.repaint();

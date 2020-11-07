@@ -68,6 +68,7 @@ public class BusStation<T extends Transport, H extends AdditionalElems> {
 
     public void drawBusStation(Graphics2D g) {
         drawMarking(g);
+        g.setStroke(new BasicStroke(1));
         for (Object place : places) {
             if (place != null) {
                 T placeT = (T) place;
@@ -77,8 +78,7 @@ public class BusStation<T extends Transport, H extends AdditionalElems> {
     }
 
     public void drawMarking(Graphics2D g) {
-        Stroke pen = new BasicStroke(3);
-        g.setStroke(pen);
+        g.setStroke(new BasicStroke(3));
         for (int i = 0; i < pictureWidth / placeSizeWidth; i++) {
             for (int j = 0; j < pictureHeight / placeSizeHeight + 1; j++) {
                 g.drawLine(i * placeSizeWidth, j * placeSizeHeight, i * placeSizeWidth + placeSizeWidth / 2, j * placeSizeHeight);

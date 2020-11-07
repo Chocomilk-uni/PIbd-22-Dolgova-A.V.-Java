@@ -64,7 +64,6 @@ public class DoubleBus extends Bus{
 
     @Override
     public void drawTransport(Graphics g) {
-
         super.drawTransport(g);
 
         if (hasFrontPlatform) {
@@ -103,6 +102,6 @@ public class DoubleBus extends Bus{
         }
 
         //Отрисовка дополнительных элементов (форма дверей)
-        additionalElems.draw(g, Color.DARK_GRAY, getAdditionalColor(), startPosX, startPosY);
+        additionalElems.draw(g, Color.DARK_GRAY, startPosX, startPosY);
     }
 }

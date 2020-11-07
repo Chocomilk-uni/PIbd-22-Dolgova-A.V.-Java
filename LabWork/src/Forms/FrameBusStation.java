@@ -22,7 +22,7 @@ public class FrameBusStation {
         frame.setResizable(false);
         frame.setLayout(null);
 
-        busStation = new BusStation<>(700, 500);
+        busStation = new BusStation<>(700, 450);
 
         PanelBusStation panelBusStation = new PanelBusStation(busStation);
         JButton buttonParkBus = new JButton("Припарковать автобус");
@@ -44,14 +44,15 @@ public class FrameBusStation {
         groupBoxPickBus.add(labelPlace);
         frame.getContentPane().add(groupBoxPickBus);
 
-        panelBusStation.setBounds(0, 0, 650, 450);
+        panelBusStation.setBounds(5, 5, 650, 450);
         buttonParkBus.setBounds(50, 420, 200, 30);
         buttonParkDoubleBus.setBounds(260, 420, 300, 30);
 
-        groupBoxPickBus.setBounds(670, 20, 200, 250);
+        groupBoxPickBus.setLayout(null);
+        groupBoxPickBus.setBounds(670, 20, 200, 130);
         labelPlace.setBounds(10, 20, 50, 30);
-        textFieldPlaceNumber.setBounds(70, 20, 30, 30);
-        buttonPickBus.setBounds(80, 180, 150, 30);
+        textFieldPlaceNumber.setBounds(70, 30, 30, 20);
+        buttonPickBus.setBounds(25, 70, 150, 30);
 
         buttonParkBus.addActionListener(e -> parkBus());
         buttonParkDoubleBus.addActionListener(e -> parkDoubleBus());
@@ -81,7 +82,7 @@ public class FrameBusStation {
             JColorChooser additionalColorDialog = new JColorChooser();
             JOptionPane.showMessageDialog(frame, additionalColorDialog);
             if (additionalColorDialog.getColor() != null) {
-                Bus bus = new DoubleBus(1000, 5000, 40, colorDialog.getColor(), additionalColorDialog.getColor(), true, true, true, 0, 0);
+                Bus bus = new DoubleBus(1000, 5000, 40, colorDialog.getColor(), additionalColorDialog.getColor(), true, false, true, 0, 0);
                 if (busStation.add(bus)) {
                     frame.repaint();
                 } else {
@@ -97,7 +98,7 @@ public class FrameBusStation {
                 Bus bus = busStation.remove(Integer.parseInt(textFieldPlaceNumber.getText()));
                 if (bus != null) {
                     FrameBus frameBus = new FrameBus();
-                    frameBus.setBus(bus);
+                    frameBus.initBus(bus);
                     frame.repaint();
                 } else {
                     JOptionPane.showMessageDialog(frame, "На этом месте нет автобуса");
