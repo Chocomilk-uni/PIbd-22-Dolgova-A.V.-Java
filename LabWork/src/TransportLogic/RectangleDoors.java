@@ -1,7 +1,9 @@
+package TransportLogic;
+
 import java.awt.*;
 
 public class RectangleDoors implements AdditionalElems {
-    //Закрытое поле от перечисления NumberOfDoors
+    //Закрытое поле от перечисления TransportLogic.NumberOfDoors
     private NumberOfDoors doorsNumber;
 
     public RectangleDoors(int number) {
