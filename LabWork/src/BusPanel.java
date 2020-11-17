@@ -3,18 +3,18 @@ import java.awt.*;
 
 public class BusPanel extends JPanel {
 
-    private Bus doubleBus;
+    private PublicTransport bus;
 
     public void paintComponent(Graphics g) {
-        if (doubleBus != null)
-            doubleBus.drawTransport(g);
+        if (bus != null)
+            bus.drawTransport(g);
     }
 
-    public void initBus(Bus doubleBus) {
-        this.doubleBus = doubleBus;
+    public void initBus(PublicTransport bus) {
+        this.bus = bus;
     }
 
-    public Bus getBus() {
-        return doubleBus;
+    public PublicTransport getBus() {
+        return bus;
     }
 }

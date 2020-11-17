@@ -5,11 +5,11 @@ public enum NumberOfDoors {
 
     public static NumberOfDoors getNumber(int number) {
         switch (number) {
-            case 3:
+            case 0:
                 return NumberOfDoors.three;
-            case 4:
+            case 1:
                 return NumberOfDoors.four;
-            case 5:
+            case 2:
                 return  NumberOfDoors.five;
         }
         return null;
