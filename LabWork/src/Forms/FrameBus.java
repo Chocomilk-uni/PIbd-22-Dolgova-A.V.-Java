@@ -1,13 +1,26 @@
+package Forms;
+
+import TransportLogic.Bus;
+import TransportLogic.Direction;
+import TransportLogic.DoubleBus;
+import TransportLogic.Transport;
+
 import javax.swing.*;
 import java.awt.*;
 
-public class BusFrame {
+public class FrameBus {
     private final JFrame frame;
-    private BusPanel busPanel;
+    private PanelBus panelBus;
     private final JComboBox<String> listNumberOfDoors;
     private final JComboBox<String> listAdditionalElems;
 
-    public BusFrame() {
+    public void initBus(Transport bus) {
+        bus.setPosition((int)(Math.random() * 100 + 10), (int) (Math.random() * (150 - 130) + 130), frame.getWidth(), frame.getHeight());
+        panelBus.initBus(bus);
+        frame.repaint();
+    }
+
+    public FrameBus() {
         frame = new JFrame("Автобус");
         frame.setSize(900, 500);
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -53,12 +66,10 @@ public class BusFrame {
         listAdditionalElems = new JComboBox<>(new String[]{"Прямоугольная форма", "Треугольная форма", "Загруглённая форма"});
         frame.getContentPane().add(listAdditionalElems);
         listAdditionalElems.setBounds(12, 75, 150, 30);
-    }
 
-    public void addBusPanel(BusPanel panel) {
-        busPanel = panel;
-        frame.getContentPane().add(busPanel);
-        busPanel.setBounds(0, 0, 900, 500);
+        panelBus = new PanelBus();
+        frame.getContentPane().add(panelBus);
+        panelBus.setBounds(0, 0, 900, 500);
         frame.repaint();
     }
 
@@ -66,16 +77,16 @@ public class BusFrame {
         String name = button.getName();
         switch (name) {
             case "upButton":
-                busPanel.getBus().moveTransport(Direction.Up);
+                panelBus.getBus().moveTransport(Direction.Up);
                 break;
             case "downButton":
-                busPanel.getBus().moveTransport(Direction.Down);
+                panelBus.getBus().moveTransport(Direction.Down);
                 break;
             case "rightButton":
-                busPanel.getBus().moveTransport(Direction.Right);
+                panelBus.getBus().moveTransport(Direction.Right);
                 break;
             case "leftButton":
-                busPanel.getBus().moveTransport(Direction.Left);
+                panelBus.getBus().moveTransport(Direction.Left);
                 break;
         }
         frame.repaint();
@@ -83,14 +94,14 @@ public class BusFrame {
 
     //Скорость не очень правдоподобная, чтобы передвижение было более заметно (изначально стояла от 40 до 50)
     private void initBus() {
-        busPanel.initBus(new Bus((int) (Math.random() * (1500 - 1000) + 1000), (float) (Math.random() * (8500 - 5500) + 5500), (int) (Math.random() * (40 - 20) + 20), Color.RED));
-        busPanel.getBus().setPosition((int) (Math.random() * 100 + 10), (int) (Math.random() * (150 - 130) + 130), 850, 450);
+        panelBus.initBus(new Bus((int) (Math.random() * (1500 - 1000) + 1000), (float) (Math.random() * (8500 - 5500) + 5500), (int) (Math.random() * (40 - 20) + 20), Color.RED));
+        panelBus.getBus().setPosition((int) (Math.random() * 100 + 10), (int) (Math.random() * (150 - 130) + 130), 850, 450);
         frame.repaint();
     }
 
     private void initDoubleBus() {
-        busPanel.initBus(new DoubleBus((int) (Math.random() * (1500 - 1000) + 1000), (float) (Math.random() * (8500 - 5500) + 5500), (int) (Math.random() * (40 - 20) + 20), Color.RED, Color.WHITE,true, false, true, listNumberOfDoors.getSelectedIndex(), listAdditionalElems.getSelectedIndex()));
-        busPanel.getBus().setPosition((int) (Math.random() * 100 + 10), (int) (Math.random() * (150 - 130) + 130), 850, 450);
+        panelBus.initBus(new DoubleBus((int) (Math.random() * (1500 - 1000) + 1000), (float) (Math.random() * (8500 - 5500) + 5500), (int) (Math.random() * (40 - 20) + 20), Color.RED, Color.WHITE,true, false, true, listNumberOfDoors.getSelectedIndex(), listAdditionalElems.getSelectedIndex()));
+        panelBus.getBus().setPosition((int) (Math.random() * 100 + 10), (int) (Math.random() * (150 - 130) + 130), 850, 450);
         frame.repaint();
     }
 }

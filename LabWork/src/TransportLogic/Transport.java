@@ -1,3 +1,5 @@
+package TransportLogic;
+
 import java.awt.*;
 
 public interface Transport {

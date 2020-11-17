@@ -1,7 +1,9 @@
+package TransportLogic;
+
 import java.awt.*;
 
 public class TriangularDoors implements AdditionalElems {
-    //Закрытое поле от перечисления NumberOfDoors
+    //Закрытое поле от перечисления TransportLogic.NumberOfDoors
     private NumberOfDoors doorsNumber;
 
     public TriangularDoors(int number) {
@@ -15,7 +17,7 @@ public class TriangularDoors implements AdditionalElems {
     }
 
     @Override
-    public void draw(Graphics g, Color color, Color additionalColor, int posX, int posY) {
+    public void draw(Graphics g, Color color, int posX, int posY) {
         int[] yPoints = new int[]{posY + 40, posY + 35, posY + 40};
         int[] xFirstPoints = new int[]{posX + 91, posX + 98, posX + 106};
         int[] xSecondPoints = new int[]{posX + 28, posX + 35, posX + 43};
@@ -26,7 +28,7 @@ public class TriangularDoors implements AdditionalElems {
         g.fillRect(posX + 48, posY + 40, 15, 30);
         g.fillPolygon(xSecondPoints, yPoints, 3);
         g.fillPolygon(xThirdPoints, yPoints, 3);
-        g.setColor(additionalColor);
+        g.setColor(Color.white);
         g.drawLine(posX + 98, posY + 37, posX + 98, posY + 40);
         g.drawLine(posX + 35, posY + 37, posX + 35, posY + 70);
         g.drawLine(posX + 55, posY + 37, posX + 55, posY + 70);
@@ -36,14 +38,14 @@ public class TriangularDoors implements AdditionalElems {
             g.setColor(color);
             g.fillRect(posX + 8, posY + 40, 15, 30);
             g.fillPolygon(xFourthPoints, yPoints, 3);
-            g.setColor(additionalColor);
+            g.setColor(Color.white);
             g.drawLine(posX + 15, posY + 37, posX + 15, posY + 70);
             if (doorsNumber == NumberOfDoors.five) {
                 int[] xFifthPoints = new int[]{posX + 68, posX + 75, posX + 83};
                 g.setColor(color);
                 g.fillRect(posX + 68, posY + 40, 15, 30);
                 g.fillPolygon(xFifthPoints, yPoints, 3);
-                g.setColor(additionalColor);
+                g.setColor(Color.white);
                 g.drawLine(posX + 75, posY + 37, posX + 75, posY + 70);
             }
         }

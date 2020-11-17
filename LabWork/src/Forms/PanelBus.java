@@ -1,20 +1,24 @@
+package Forms;
+
+import TransportLogic.Transport;
+
 import javax.swing.*;
 import java.awt.*;
 
-public class BusPanel extends JPanel {
+public class PanelBus extends JPanel {
 
-    private PublicTransport bus;
+    private Transport bus;
 
     public void paintComponent(Graphics g) {
         if (bus != null)
             bus.drawTransport(g);
     }
 
-    public void initBus(PublicTransport bus) {
+    public void initBus(Transport bus) {
         this.bus = bus;
     }
 
-    public PublicTransport getBus() {
+    public Transport getBus() {
         return bus;
     }
 }
