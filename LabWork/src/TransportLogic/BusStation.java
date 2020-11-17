@@ -4,7 +4,6 @@ import java.awt.*;
 
 public class BusStation<T extends Transport, H extends AdditionalElems> {
     private final Object[] places;
-
     private final int pictureWidth;
     private final int pictureHeight;
 
@@ -44,26 +43,25 @@ public class BusStation<T extends Transport, H extends AdditionalElems> {
         }
     }
 
-    //Метод как замена перегрузки оператора ">="
-    public boolean moreOrEqual(int number) {
+    //Подсчёт занятых мест
+    public int countOccupiedPlaces() {
         int placesNumber = 0;
         for (Object object : places) {
             if (object != null) {
                 placesNumber++;
             }
         }
-        return placesNumber >= number;
+        return placesNumber;
+    }
+
+    //Метод как замена перегрузки оператора ">="
+    public boolean moreOrEqual(int number) {
+        return countOccupiedPlaces() >= number;
     }
 
     //Метод как замена перегрузки оператора "<="
     public boolean lessOrEqual(int number) {
-        int placesNumber = 0;
-        for (Object object : places) {
-            if (object != null) {
-                placesNumber++;
-            }
-        }
-        return placesNumber <= number;
+        return countOccupiedPlaces() <= number;
     }
 
     public void drawBusStation(Graphics2D g) {
