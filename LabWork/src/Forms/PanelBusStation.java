@@ -13,6 +13,7 @@ public class PanelBusStation extends JPanel {
     protected void paintComponent(Graphics g) {
         if (selectedItem != null) {
             Graphics2D g2 = (Graphics2D) g;
+            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             if (busStationCollection != null) {
                 busStationCollection.get(selectedItem).drawBusStation(g2);
             }

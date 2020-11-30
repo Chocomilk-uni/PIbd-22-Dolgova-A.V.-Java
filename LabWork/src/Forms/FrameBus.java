@@ -100,7 +100,7 @@ public class FrameBus {
     }
 
     private void initDoubleBus() {
-        panelBus.initBus(new DoubleBus((int) (Math.random() * (1500 - 1000) + 1000), (float) (Math.random() * (8500 - 5500) + 5500), (int) (Math.random() * (40 - 20) + 20), Color.RED, Color.WHITE,true, false, true, listNumberOfDoors.getSelectedIndex(), listAdditionalElems.getSelectedIndex()));
+        panelBus.initBus(new DoubleBus((int) (Math.random() * (1500 - 1000) + 1000), (float) (Math.random() * (8500 - 5500) + 5500), (int) (Math.random() * (40 - 20) + 20), Color.RED, Color.WHITE,true, false, true));
         panelBus.getBus().setPosition((int) (Math.random() * 100 + 10), (int) (Math.random() * (150 - 130) + 130), 850, 450);
         frame.repaint();
     }

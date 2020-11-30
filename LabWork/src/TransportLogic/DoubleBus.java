@@ -27,7 +27,7 @@ public class DoubleBus extends Bus{
         return hasFrontPlatform;
     }
 
-    private void setAdditionalColor(Color additionalColor) {
+    public void setAdditionalColor(Color additionalColor) {
         this.additionalColor = additionalColor;
     }
 
@@ -43,23 +43,16 @@ public class DoubleBus extends Bus{
         this.hasFrontPlatform = hasFrontPlatform;
     }
 
-    public DoubleBus(int averageSpeed, float weight, int seats, Color mainColor, Color additColor, boolean hasFrontPlatform, boolean hasAdditionalDoor, boolean hasSecondFloor, int number, int addition) {
+    public void setAdditionalElems(AdditionalElems additionalElems) {
+        this.additionalElems = additionalElems;
+    }
+
+    public DoubleBus(int averageSpeed, float weight, int seats, Color mainColor, Color additColor, boolean hasFrontPlatform, boolean hasAdditionalDoor, boolean hasSecondFloor) {
         super(averageSpeed, weight, seats, mainColor);
         this.additionalColor = additColor;
         this.hasAdditionalDoor = hasAdditionalDoor;
         this.hasFrontPlatform = hasFrontPlatform;
         this.hasSecondFloor = hasSecondFloor;
-        //Инициализация поля от ИнтерДоп
-        switch (addition) {
-            case 0:
-                additionalElems = new RectangleDoors(number);
-                break;
-            case 1:
-                additionalElems = new TriangularDoors(number);
-                break;
-            case 2:
-                additionalElems = new RoundedDoors(number);
-        }
     }
 
     @Override
@@ -102,6 +95,8 @@ public class DoubleBus extends Bus{
         }
 
         //Отрисовка дополнительных элементов (форма дверей)
-        additionalElems.draw(g, Color.DARK_GRAY, startPosX, startPosY);
+        if (additionalElems != null) {
+            additionalElems.draw(g, Color.DARK_GRAY, startPosX, startPosY);
+        }
     }
 }
