@@ -55,6 +55,38 @@ public class DoubleBus extends Bus{
         this.hasSecondFloor = hasSecondFloor;
     }
 
+    public DoubleBus(String info) {
+        String[] args = info.split(separator);
+        if (args.length == 9) {
+            averageSpeed = Integer.parseInt(args[0]);
+            weight = Float.parseFloat(args[1]);
+            seats = Integer.parseInt(args[2]);
+            mainColor = new Color(Integer.parseInt(args[3]));
+            additionalColor = new Color(Integer.parseInt(args[4]));
+            hasAdditionalDoor = Boolean.parseBoolean(args[5]);
+            hasFrontPlatform = Boolean.parseBoolean(args[6]);
+            hasSecondFloor = Boolean.parseBoolean(args[7]);
+            if (args[8].contains("null")) {
+                additionalElems = null;
+            }
+            else {
+                String[] argsAdditionalElems = args[8].split("\\.");
+                int number = Integer.parseInt(argsAdditionalElems[1]);
+                switch (argsAdditionalElems[0]) {
+                    case "RectangleDoors":
+                        additionalElems = new RectangleDoors(number);
+                        break;
+                    case "RoundedDoors":
+                        additionalElems = new RoundedDoors(number);
+                        break;
+                    case "TriangularDoors":
+                        additionalElems = new TriangularDoors(number);
+                        break;
+                }
+            }
+        }
+    }
+
     @Override
     public void drawTransport(Graphics g) {
         super.drawTransport(g);
@@ -98,5 +130,12 @@ public class DoubleBus extends Bus{
         if (additionalElems != null) {
             additionalElems.draw(g, Color.DARK_GRAY, startPosX, startPosY);
         }
+    }
+
+    public String toString() {
+        return averageSpeed + separator + weight + separator + seats + separator +
+                mainColor.getRGB() + separator + additionalColor.getRGB() + separator +
+                hasAdditionalDoor + separator + hasFrontPlatform + separator + hasSecondFloor +
+                separator + additionalElems;
     }
 }
