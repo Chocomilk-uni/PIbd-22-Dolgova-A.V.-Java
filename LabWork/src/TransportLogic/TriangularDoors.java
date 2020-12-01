@@ -50,4 +50,8 @@ public class TriangularDoors implements AdditionalElems {
             }
         }
     }
+
+    public String toString() {
+        return this.getClass().getSimpleName() + '.' + doorsNumber.ordinal();
+    }
 }

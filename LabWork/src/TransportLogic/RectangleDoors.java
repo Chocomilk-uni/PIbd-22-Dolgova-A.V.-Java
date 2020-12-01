@@ -40,4 +40,8 @@ public class RectangleDoors implements AdditionalElems {
             }
         }
     }
+
+    public String toString() {
+        return this.getClass().getSimpleName() + '.' + doorsNumber.ordinal();
+    }
 }

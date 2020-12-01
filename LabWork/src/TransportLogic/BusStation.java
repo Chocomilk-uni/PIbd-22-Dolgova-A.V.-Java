@@ -96,4 +96,8 @@ public class BusStation<T extends Transport, H extends AdditionalElems> {
         }
         return null;
     }
+
+    public void clear() {
+        places.clear();
+    }
 }

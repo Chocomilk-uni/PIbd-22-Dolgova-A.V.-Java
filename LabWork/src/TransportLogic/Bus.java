@@ -8,6 +8,8 @@ public class Bus extends PublicTransport {
     protected int busWidth = 100;
     protected double changeHeight = 1.4;
 
+    protected String separator = ";";
+
     public Bus(int averageSpeed, float weight, int seats, Color mainColor) {
         this.averageSpeed = averageSpeed;
         this.weight = weight;
@@ -24,6 +26,19 @@ public class Bus extends PublicTransport {
         this.busWidth = busWidth;
         this.changeHeight = changeHeight;
     }
+
+    public Bus(String info) {
+        String[] args = info.split(separator);
+        if (args.length == 4)
+        {
+            averageSpeed = Integer.parseInt(args[0]);
+            weight = Float.parseFloat(args[1]);
+            seats = Integer.parseInt(args[2]);
+            mainColor = new Color(Integer.parseInt(args[3]));
+        }
+    }
+
+    public Bus() { }
 
     @Override
     public void moveTransport(Direction direction)
@@ -78,5 +93,9 @@ public class Bus extends PublicTransport {
         g.fillRect(startPosX + 91, startPosY + 40, 15, 30);
         g.setColor(Color.WHITE);
         g.drawLine(startPosX + 98, startPosY + 40, startPosX + 98, startPosY + 70);
+    }
+
+    public String toString() {
+        return averageSpeed + separator + weight + separator + seats + separator + mainColor.getRGB();
     }
 }

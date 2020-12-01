@@ -1,7 +1,9 @@
 package Forms;
 
+import javax.swing.*;
+
 public class Main {
     public static void main(String[] args) {
-        FrameBusStation frameBusStation = new FrameBusStation();
+        SwingUtilities.invokeLater(() -> new FrameBusStation());
     }
 }
