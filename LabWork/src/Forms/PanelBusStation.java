@@ -1,28 +1,29 @@
 package Forms;
 
-import TransportLogic.AdditionalElems;
-import TransportLogic.Bus;
-import TransportLogic.BusStation;
+import TransportLogic.BusStationCollection;
 
 import javax.swing.*;
 import java.awt.*;
 
 public class PanelBusStation extends JPanel {
 
-    private final BusStation<Bus, AdditionalElems> busStation;
+    private final BusStationCollection busStationCollection;
+    private String selectedItem = null;
 
     protected void paintComponent(Graphics g) {
-        Graphics2D g2 = (Graphics2D) g;
-        if (busStation != null) {
-            busStation.drawBusStation(g2);
+        if (selectedItem != null) {
+            Graphics2D g2 = (Graphics2D) g;
+            if (busStationCollection != null) {
+                busStationCollection.get(selectedItem).drawBusStation(g2);
+            }
         }
     }
 
-    public BusStation<Bus, AdditionalElems> getBusStation() {
-        return busStation;
+    public void setSelectedItem(String selectedItem) {
+        this.selectedItem = selectedItem;
     }
 
-    public PanelBusStation(BusStation<Bus, AdditionalElems> busStation) {
-        this.busStation = busStation;
+    public PanelBusStation(BusStationCollection busStationCollection) {
+        this.busStationCollection = busStationCollection;
     }
 }
