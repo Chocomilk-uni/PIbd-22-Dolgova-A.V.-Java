@@ -33,7 +33,6 @@ public class FrameBusStation {
 
         panelBusStation = new PanelBusStation(busStationCollection);
         JButton buttonParkBus = new JButton("Припарковать автобус");
-        JButton buttonParkDoubleBus = new JButton("Припарковать  двухэтажный автобус");
         JLabel labelPlace = new JLabel("Место:");
         JButton buttonAddToQueue = new JButton("Добавить в очередь");
         JButton buttonGetFromQueue = new JButton("Получить из очереди");
@@ -54,7 +53,6 @@ public class FrameBusStation {
         JButton buttonDeleteBusStatiom = new JButton("Удалить автовокзал");
 
         frame.getContentPane().add(buttonParkBus);
-        frame.getContentPane().add(buttonParkDoubleBus);
         frame.getContentPane().add(panelBusStation);
 
         groupBoxPickBus.add(textFieldPlaceNumber);
@@ -71,11 +69,10 @@ public class FrameBusStation {
         frame.getContentPane().add(groupBoxBusStation);
 
         panelBusStation.setBounds(5, 5, 650, 450);
-        buttonParkBus.setBounds(50, 420, 200, 30);
-        buttonParkDoubleBus.setBounds(260, 420, 300, 30);
+        buttonParkBus.setBounds(670, 265, 200, 40);
 
         groupBoxBusStation.setLayout(null);
-        groupBoxBusStation.setBounds(670, 20, 200, 240);
+        groupBoxBusStation.setBounds(670, 10, 200, 240);
         labelBusStationName.setBounds(10, 20, 180, 30);
         textFieldBusStationName.setBounds(10, 50, 180, 20);
         buttonAddBusStation.setBounds(10, 80, 180, 30);
@@ -83,14 +80,13 @@ public class FrameBusStation {
         buttonDeleteBusStatiom.setBounds(10, 190, 180, 30);
 
         groupBoxPickBus.setLayout(null);
-        groupBoxPickBus.setBounds(670, 280, 200, 150);
+        groupBoxPickBus.setBounds(670, 320, 200, 140);
         labelPlace.setBounds(10, 20, 50, 30);
         textFieldPlaceNumber.setBounds(70, 30, 30, 20);
-        buttonAddToQueue.setBounds(10, 70, 180, 30);
-        buttonGetFromQueue.setBounds(10, 110, 180, 30);
+        buttonAddToQueue.setBounds(10, 60, 180, 30);
+        buttonGetFromQueue.setBounds(10, 100, 180, 30);
 
         buttonParkBus.addActionListener(e -> parkBus());
-        buttonParkDoubleBus.addActionListener(e -> parkDoubleBus());
         buttonAddToQueue.addActionListener(e -> pickBus());
         buttonGetFromQueue.addActionListener(e -> getBus());
         buttonAddBusStation.addActionListener(e -> addBusStation());
@@ -102,36 +98,16 @@ public class FrameBusStation {
 
     private void parkBus() {
         if (listBoxBusStation.getSelectedIndex() >= 0) {
-            JColorChooser colorDialog = new JColorChooser();
-            JOptionPane.showMessageDialog(frame, colorDialog);
-            if (colorDialog.getColor() != null) {
-                Bus bus = new Bus(1000, 5000, 40, colorDialog.getColor());
-                if (busStationCollection.get(listBoxBusStation.getSelectedValue()).add(bus)) {
-                    frame.repaint();
-                } else {
-                    JOptionPane.showMessageDialog(frame, "Автовокзал переполнен");
-                }
-            }
-        } else {
-            JOptionPane.showMessageDialog(frame, "Автовокзал не выбран", "Ошибка", JOptionPane.ERROR_MESSAGE);
-        }
-    }
+            PanelBusConfig configPanel = new PanelBusConfig(frame);
 
-    private void parkDoubleBus() {
-        if (listBoxBusStation.getSelectedIndex() >= 0) {
-            JColorChooser colorDialog = new JColorChooser();
-            JOptionPane.showMessageDialog(frame, colorDialog);
-            if (colorDialog.getColor() != null) {
-                JColorChooser additionalColorDialog = new JColorChooser();
-                JOptionPane.showMessageDialog(frame, additionalColorDialog);
-                if (additionalColorDialog.getColor() != null) {
-                    Bus bus = new DoubleBus(1000, 5000, 40, colorDialog.getColor(), additionalColorDialog.getColor(), true, false, true, 0, 0);
-                    if (busStationCollection.get(listBoxBusStation.getSelectedValue()).add(bus)) {
-                        frame.repaint();
-                    } else {
-                        JOptionPane.showMessageDialog(frame, "Автовокзал переполнен");
-                    }
-                }
+            //Получаем автобус из панельки диалогового окна
+            Bus bus = configPanel.getBus();
+
+            if (bus == null) return;
+            if (busStationCollection.get(listBoxBusStation.getSelectedValue()).add(bus)) {
+                frame.repaint();
+            } else {
+                JOptionPane.showMessageDialog(frame, "Автовокзал переполнен");
             }
         } else {
             JOptionPane.showMessageDialog(frame, "Автовокзал не выбран", "Ошибка", JOptionPane.ERROR_MESSAGE);
@@ -144,9 +120,7 @@ public class FrameBusStation {
                 try {
                     Bus bus = busStationCollection.get(listBoxBusStation.getSelectedValue()).remove(Integer.parseInt(textFieldPlaceNumber.getText()));
                     if (bus != null) {
-                        /*
-                        Автобусы, изымаемые с формы, помещаются в очередь
-                         */
+                        //Автобусы, изымаемые с формы, помещаются в очередь
                         busQueue.add(bus);
                         frame.repaint();
                     } else {
@@ -164,9 +138,7 @@ public class FrameBusStation {
     private void getBus() {
         if (!busQueue.isEmpty()) {
             FrameBus frameBus = new FrameBus();
-            /*
-            Автобусы на вторую форму передаются из очереди
-             */
+            //Автобусы на вторую форму передаются из очереди
             frameBus.initBus(Objects.requireNonNull(busQueue.poll()));
             frame.repaint();
         }
