@@ -101,12 +101,10 @@ public class BusStationCollection {
                 if (line.contains("BusStation")) {
                     key = line.split(separator)[1];
                     busStationStages.put(key, new BusStation<>(pictureWidth, pictureHeight));
-                }
-                else if (line.contains(separator)) {
+                } else if (line.contains(separator)) {
                     if (line.contains("DoubleBus")) {
                         bus = new DoubleBus(line.split(separator)[1]);
-                    }
-                    else if (line.contains("Bus")) {
+                    } else if (line.contains("Bus")) {
                         bus = new Bus(line.split(separator)[1]);
                     }
                     if (!(busStationStages.get(key).add(bus))) {
@@ -121,28 +119,28 @@ public class BusStationCollection {
     }
 
     public boolean saveBusStation(String filename, String key) {
-        if (!filename.contains(".txt")) {
-            filename += ".txt";
-        }
-        try (FileWriter fileWriter = new FileWriter(filename, false)) {
-            if (busStationStages.containsKey(key)) {
+        if (busStationStages.containsKey(key)) {
+            if (!filename.contains(".txt")) {
+                filename += ".txt";
+            }
+            try (FileWriter fileWriter = new FileWriter(filename, false)) {
                 fileWriter.write("BusStation" + separator + key + '\n');
-            }
 
-            Bus bus;
-            for (int i = 0; (bus = busStationStages.get(key).get(i)) != null; i++) {
-                if (bus.getClass().getSimpleName().equals("Bus")) {
-                    fileWriter.write("Bus" + separator);
+                Bus bus;
+                for (int i = 0; (bus = busStationStages.get(key).get(i)) != null; i++) {
+                    if (bus.getClass().getSimpleName().equals("Bus")) {
+                        fileWriter.write("Bus" + separator);
+                    } else if (bus.getClass().getSimpleName().equals("DoubleBus")) {
+                        fileWriter.write("DoubleBus" + separator);
+                    }
+                    fileWriter.write(bus.toString() + '\n');
                 }
-                else if (bus.getClass().getSimpleName().equals("DoubleBus")) {
-                    fileWriter.write("DoubleBus" + separator);
-                }
-                fileWriter.write(bus.toString() + '\n');
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
+            return true;
         }
-        return  true;
+        return false;
     }
 
     public boolean loadBusStation(String filename) {
@@ -156,12 +154,10 @@ public class BusStationCollection {
                 key = line.split(separator)[1];
                 if (busStationStages.containsKey(key)) {
                     busStationStages.get(key).clear();
-                }
-                else {
+                } else {
                     busStationStages.put(key, new BusStation<>(pictureWidth, pictureHeight));
                 }
-            }
-            else {
+            } else {
                 return false;
             }
 
@@ -171,8 +167,7 @@ public class BusStationCollection {
                 if (line.contains(separator)) {
                     if (line.contains("DoubleBus")) {
                         bus = new DoubleBus(line.split(separator)[1]);
-                    }
-                    else if (line.contains("Bus")) {
+                    } else if (line.contains("Bus")) {
                         bus = new Bus(line.split(separator)[1]);
                     }
                     if (!(busStationStages.get(key).add(bus))) {
@@ -180,8 +175,7 @@ public class BusStationCollection {
                     }
                 }
             }
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
         return true;
