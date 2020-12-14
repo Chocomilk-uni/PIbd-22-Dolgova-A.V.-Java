@@ -24,24 +24,24 @@ public class BusStation<T extends Transport, H extends AdditionalElems> {
     }
 
     //Метод, заменяющий перегруженный оператор сложения в лабораторной на C#
-    public boolean add(T bus) {
-        if (places.size() < maxCount)
+    public boolean add(T bus) throws BusStationOverflowException{
+        if (places.size() >= maxCount)
         {
-            places.add(bus);
-            return true;
+           throw new BusStationOverflowException();
         }
-        return false;
+        places.add(bus);
+        return true;
     }
 
     //Метод, заменяющий перегруженный оператор вычитания в лабораторной на C#
-    public T remove(int index) {
-        if (index >= 0 && index < maxCount && places.get(index) != null)
+    public T remove(int index) throws BusStationPlaceNotFoundException{
+        if (index < 0 || index >= places.size())
         {
-            T truck = places.get(index);
-            places.remove(index);
-            return truck;
+            throw new BusStationPlaceNotFoundException(index);
         }
-        return null;
+        T truck = places.get(index);
+        places.remove(index);
+        return truck;
     }
 
     //Подсчёт занятых мест

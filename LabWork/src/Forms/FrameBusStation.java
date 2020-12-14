@@ -1,10 +1,16 @@
 package Forms;
 
 import TransportLogic.*;
+import org.apache.log4j.Logger;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.PropertyConfigurator;
 
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.security.KeyException;
 import java.util.LinkedList;
 import java.util.Objects;
 import java.util.Queue;
@@ -20,7 +26,12 @@ public class FrameBusStation {
     private final JTextField textFieldBusStationName;
     private final PanelBusStation panelBusStation;
 
+    private Logger logger;
+
     public FrameBusStation() {
+        logger = LogManager.getLogger(FrameBusStation.class);
+        PropertyConfigurator.configure("C:\\Users\\Chocomilk\\IdeaProjects\\PIbd-22-Dolgova-A.V.-Java\\LabWork\\src\\TransportLogic\\log4j2.properties");
+
         busQueue = new LinkedList<>();
 
         frame = new JFrame("Автовокзалы");
@@ -118,7 +129,11 @@ public class FrameBusStation {
     }
 
     private void parkBus() {
-        if (listBoxBusStation.getSelectedIndex() >= 0) {
+        if (listBoxBusStation.getSelectedValue() == null) {
+            JOptionPane.showMessageDialog(frame, "Автовокзал не выбран", "Ошибка", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        try {
             PanelBusConfig configPanel = new PanelBusConfig(frame);
 
             //Получаем автобус из панельки диалогового окна
@@ -126,33 +141,41 @@ public class FrameBusStation {
 
             if (bus == null) return;
             if (busStationCollection.get(listBoxBusStation.getSelectedValue()).add(bus)) {
+                logger.info("На автовокзал " + listBoxBusStation.getSelectedValue() + " был добавлен автобус " + bus);
                 frame.repaint();
-            } else {
-                JOptionPane.showMessageDialog(frame, "Автовокзал переполнен");
             }
-        } else {
-            JOptionPane.showMessageDialog(frame, "Автовокзал не выбран", "Ошибка", JOptionPane.ERROR_MESSAGE);
+        } catch (BusStationOverflowException e) {
+            JOptionPane.showMessageDialog(frame, "Автовокзал переполнен", "Ошибка", JOptionPane.ERROR_MESSAGE);
+            logger.warn(e.getMessage());
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(frame, "Неизвестная ошибка", "Ошибка", JOptionPane.ERROR_MESSAGE);
+            logger.fatal(e.getMessage());
         }
     }
 
     private void pickBus() {
-        if (listBoxBusStation.getSelectedIndex() >= 0) {
-            if (!textFieldPlaceNumber.getText().equals("")) {
-                try {
-                    Bus bus = busStationCollection.get(listBoxBusStation.getSelectedValue()).remove(Integer.parseInt(textFieldPlaceNumber.getText()));
-                    if (bus != null) {
-                        //Автобусы, изымаемые с формы, помещаются в очередь
-                        busQueue.add(bus);
-                        frame.repaint();
-                    } else {
-                        JOptionPane.showMessageDialog(frame, "Автобус с таким индексом отсутствует", "Ошибка", JOptionPane.ERROR_MESSAGE);
-                    }
-                } catch (Exception e) {
-                    JOptionPane.showMessageDialog(frame, "Автобус с таким индексом отсутствует", "Ошибка", JOptionPane.ERROR_MESSAGE);
-                }
-            }
-        } else {
+        if (listBoxBusStation.getSelectedValue() == null) {
             JOptionPane.showMessageDialog(frame, "Автовокзал не выбран", "Ошибка", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        if (textFieldPlaceNumber.getText().equals("")) {
+            JOptionPane.showMessageDialog(frame, "Перед изъятием автобуса необходимо ввести номер места", "Ошибка", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        try {
+            Bus bus = busStationCollection.get(listBoxBusStation.getSelectedValue()).remove(Integer.parseInt(textFieldPlaceNumber.getText()));
+            if (bus != null) {
+                //Автобусы, изымаемые с формы, помещаются в очередь
+                busQueue.add(bus);
+                logger.info("С автовокзала " + listBoxBusStation.getSelectedValue() + " был изъят автобус " + bus + " и помещен в очередь");
+                frame.repaint();
+            }
+        } catch (BusStationPlaceNotFoundException e) {
+            JOptionPane.showMessageDialog(frame, e.getMessage(), "Не найдено", JOptionPane.ERROR_MESSAGE);
+            logger.warn(e.getMessage());
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(frame, "Неизвестная ошибка", "Ошибка", JOptionPane.ERROR_MESSAGE);
+            logger.warn(e.getMessage());
         }
     }
 
@@ -160,8 +183,12 @@ public class FrameBusStation {
         if (!busQueue.isEmpty()) {
             FrameBus frameBus = new FrameBus();
             //Автобусы на вторую форму передаются из очереди
-            frameBus.initBus(Objects.requireNonNull(busQueue.poll()));
+            Bus bus = busQueue.poll();
+            frameBus.initBus(Objects.requireNonNull(bus));
+            logger.info("Автобус " + bus + " был изъят из очереди");
             frame.repaint();
+        } else {
+            JOptionPane.showMessageDialog(frame, "Очередь пуста", "Ошибка", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -178,8 +205,7 @@ public class FrameBusStation {
         int itemsCount = busStationList.size();
         if (itemsCount > 0 && (index < 0 || index >= itemsCount)) {
             listBoxBusStation.setSelectedIndex(0);
-        }
-        else if (index >= 0 && index < itemsCount) {
+        } else if (index >= 0 && index < itemsCount) {
             listBoxBusStation.setSelectedIndex(index);
         }
     }
@@ -188,6 +214,7 @@ public class FrameBusStation {
         if (!textFieldBusStationName.getText().equals("")) {
             busStationCollection.addBusStation(textFieldBusStationName.getText());
             reloadLevels();
+            logger.info("Добавлен автовокзал " + textFieldBusStationName.getText());
             frame.repaint();
         } else {
             JOptionPane.showMessageDialog(frame, "Введите название автовокзала", "Ошибка", JOptionPane.ERROR_MESSAGE);
@@ -199,6 +226,7 @@ public class FrameBusStation {
             int result = JOptionPane.showConfirmDialog(frame, "Удалить автовокзал " + listBoxBusStation.getSelectedValue() + "?", "Удаление",
                     JOptionPane.YES_NO_OPTION);
             if (result == JOptionPane.YES_OPTION) {
+                logger.info("Автовокзал " + listBoxBusStation.getSelectedValue() + " удалён");
                 busStationCollection.deleteBusStation(listBoxBusStation.getSelectedValue());
                 reloadLevels();
                 frame.repaint();
@@ -210,6 +238,9 @@ public class FrameBusStation {
 
     private void listListener() {
         panelBusStation.setSelectedItem(listBoxBusStation.getSelectedValue());
+        if (listBoxBusStation.getSelectedValue() != null) {
+            logger.info("Выбран автовокзал " + listBoxBusStation.getSelectedValue());
+        }
         frame.repaint();
     }
 
@@ -218,11 +249,16 @@ public class FrameBusStation {
         fileDialog.setFileFilter(new FileNameExtensionFilter("Текстовый файл", "txt"));
         int result = fileDialog.showSaveDialog(frame);
         if (result == JFileChooser.APPROVE_OPTION) {
-            if (busStationCollection.saveData(fileDialog.getSelectedFile().getPath())) {
+            try {
+                busStationCollection.saveData(fileDialog.getSelectedFile().getPath());
                 JOptionPane.showMessageDialog(frame, "Сохранение прошло успешно");
-            }
-            else {
-                JOptionPane.showMessageDialog(frame, "Не удалось сохранить");
+                logger.info("Данные сохранены в файл " + fileDialog.getSelectedFile().getPath());
+            } catch (IOException e) {
+                JOptionPane.showMessageDialog(frame, e.getMessage(), "Ошибка при работе с файлом", JOptionPane.ERROR_MESSAGE);
+                logger.error(e.getMessage());
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(frame, e.getMessage(), "Неизвестная ошибка при сохранении", JOptionPane.ERROR_MESSAGE);
+                logger.fatal(e.getMessage());
             }
         }
 
@@ -233,18 +269,33 @@ public class FrameBusStation {
         fileDialog.setFileFilter(new FileNameExtensionFilter("Текстовый файл", "txt"));
         int result = fileDialog.showOpenDialog(frame);
         if (result == JFileChooser.APPROVE_OPTION) {
-            if (busStationCollection.loadData(fileDialog.getSelectedFile().getPath())) {
+            try {
+                busStationCollection.loadData(fileDialog.getSelectedFile().getPath());
                 JOptionPane.showMessageDialog(frame, "Загрузка прошла успешно");
                 reloadLevels();
                 frame.repaint();
-            }
-            else {
-                JOptionPane.showMessageDialog(frame,"Не удалось загрузить файл");
+                logger.info("Данные были загружены из файла " + fileDialog.getSelectedFile().getPath());
+            } catch (BusStationOverflowException e) {
+                JOptionPane.showMessageDialog(frame, e.getMessage(), "Переполнение автовокзала", JOptionPane.ERROR_MESSAGE);
+                logger.warn(e.getMessage());
+            } catch (FileNotFoundException e) {
+                JOptionPane.showMessageDialog(frame, e.getMessage(), "Файл не найден", JOptionPane.ERROR_MESSAGE);
+                logger.error(e.getMessage());
+            } catch (IllegalArgumentException e) {
+                JOptionPane.showMessageDialog(frame, e.getMessage(), "Неверный формат файла", JOptionPane.ERROR_MESSAGE);
+                logger.error(e.getMessage());
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(frame, e.getMessage(), "Неизвестная ошибка при загрузке", JOptionPane.ERROR_MESSAGE);
+                logger.fatal(e.getMessage());
             }
         }
     }
 
     private void saveBusStation() {
+        if (listBoxBusStation.getSelectedValue() == null) {
+            JOptionPane.showMessageDialog(frame, "Автовокзал не выбран", "Ошибка", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
         JFileChooser fileDialog = new JFileChooser();
         fileDialog.setFileFilter(new FileNameExtensionFilter("Текстовый файл", "txt"));
         if (listBoxBusStation.getSelectedValue() == null) {
@@ -253,10 +304,16 @@ public class FrameBusStation {
         }
         int result = fileDialog.showSaveDialog(frame);
         if (result == JFileChooser.APPROVE_OPTION) {
-            if (busStationCollection.saveBusStation(fileDialog.getSelectedFile().getPath(), listBoxBusStation.getSelectedValue())) {
+            try {
+                busStationCollection.saveBusStation(fileDialog.getSelectedFile().getPath(), listBoxBusStation.getSelectedValue());
                 JOptionPane.showMessageDialog(frame, "Сохранение прошло успешно", "Результат", JOptionPane.INFORMATION_MESSAGE);
-            } else {
-                JOptionPane.showMessageDialog(frame, "Не удалось сохранить", "Ошибка", JOptionPane.ERROR_MESSAGE);
+                logger.info("Автовокзал " + listBoxBusStation.getSelectedValue() + " был записан в файл " + fileDialog.getSelectedFile().getPath());
+            } catch (IOException e) {
+                JOptionPane.showMessageDialog(frame, e.getMessage(), "Ошибка при работе с файлом", JOptionPane.ERROR_MESSAGE);
+                logger.error(e.getMessage());
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(frame, e.getMessage(), "Неизвестная ошибка при сохранении", JOptionPane.ERROR_MESSAGE);
+                logger.fatal(e.getMessage());
             }
         }
     }
@@ -266,12 +323,24 @@ public class FrameBusStation {
         fileDialog.setFileFilter(new FileNameExtensionFilter("Текстовый файл", "txt"));
         int result = fileDialog.showOpenDialog(frame);
         if (result == JFileChooser.APPROVE_OPTION) {
-            if (busStationCollection.loadBusStation(fileDialog.getSelectedFile().getPath())) {
+            try {
+                busStationCollection.loadBusStation(fileDialog.getSelectedFile().getPath());
                 JOptionPane.showMessageDialog(frame, "Загрузка прошла успешно", "Результат", JOptionPane.INFORMATION_MESSAGE);
                 reloadLevels();
                 frame.repaint();
-            } else {
-                JOptionPane.showMessageDialog(frame, "Не удалось загрузить файл", "Ошибка", JOptionPane.ERROR_MESSAGE);
+                logger.info("Из файла " + fileDialog.getSelectedFile().getPath() + " был загружен автовокзал");
+            } catch (BusStationOverflowException e) {
+                JOptionPane.showMessageDialog(frame, e.getMessage(), "Переполнение автовокзала", JOptionPane.ERROR_MESSAGE);
+                logger.warn(e.getMessage());
+            } catch (FileNotFoundException e) {
+                JOptionPane.showMessageDialog(frame, e.getMessage(), "Файл не найден", JOptionPane.ERROR_MESSAGE);
+                logger.error(e.getMessage());
+            } catch (IllegalArgumentException e) {
+                JOptionPane.showMessageDialog(frame, e.getMessage(), "Неверный формат файла", JOptionPane.ERROR_MESSAGE);
+                logger.error(e.getMessage());
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(frame, e.getMessage(), "Неизвестная ошибка при загрузке", JOptionPane.ERROR_MESSAGE);
+                logger.fatal(e.getMessage());
             }
         }
     }
