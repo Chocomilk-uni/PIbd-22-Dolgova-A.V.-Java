@@ -175,7 +175,7 @@ public class FrameBusStation {
             logger.warn(e.getMessage());
         } catch (Exception e) {
             JOptionPane.showMessageDialog(frame, "Неизвестная ошибка", "Ошибка", JOptionPane.ERROR_MESSAGE);
-            logger.warn(e.getMessage());
+            logger.fatal(e.getMessage());
         }
     }
 
