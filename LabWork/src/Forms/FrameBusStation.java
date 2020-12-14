@@ -10,7 +10,6 @@ import javax.swing.border.Border;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.security.KeyException;
 import java.util.LinkedList;
 import java.util.Objects;
 import java.util.Queue;
