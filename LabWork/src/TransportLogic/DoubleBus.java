@@ -1,8 +1,9 @@
 package TransportLogic;
 
 import java.awt.*;
+import java.util.Iterator;
 
-public class DoubleBus extends Bus {
+public class DoubleBus extends Bus implements Iterator<Object>, Iterable<Object>, Comparable<Bus> {
     public Color additionalColor;
     public boolean hasSecondFloor;
     public boolean hasAdditionalDoor;
@@ -50,24 +51,37 @@ public class DoubleBus extends Bus {
     public DoubleBus(int averageSpeed, float weight, int seats, Color mainColor, Color additColor, boolean hasFrontPlatform, boolean hasAdditionalDoor, boolean hasSecondFloor) {
         super(averageSpeed, weight, seats, mainColor);
         this.additionalColor = additColor;
+        listConfig.add(additColor);
         this.hasAdditionalDoor = hasAdditionalDoor;
+        listConfig.add(hasAdditionalDoor);
         this.hasFrontPlatform = hasFrontPlatform;
+        listConfig.add(hasFrontPlatform);
         this.hasSecondFloor = hasSecondFloor;
+        listConfig.add(hasSecondFloor);
     }
 
     public DoubleBus(String info) {
         String[] args = info.split(separator);
         if (args.length == 9) {
             averageSpeed = Integer.parseInt(args[0]);
+            listConfig.add(averageSpeed);
             weight = Float.parseFloat(args[1]);
+            listConfig.add(weight);
             seats = Integer.parseInt(args[2]);
+            listConfig.add(seats);
             mainColor = new Color(Integer.parseInt(args[3]));
+            listConfig.add(mainColor);
             additionalColor = new Color(Integer.parseInt(args[4]));
+            listConfig.add(additionalColor);
             hasAdditionalDoor = Boolean.parseBoolean(args[5]);
+            listConfig.add(hasAdditionalDoor);
             hasFrontPlatform = Boolean.parseBoolean(args[6]);
+            listConfig.add(hasFrontPlatform);
             hasSecondFloor = Boolean.parseBoolean(args[7]);
+            listConfig.add(hasSecondFloor);
             if (args[8].contains("null")) {
                 additionalElems = null;
+                listConfig.add(additionalElems);
             } else {
                 String[] argsAdditionalElems = args[8].split("\\.");
                 int number = Integer.parseInt(argsAdditionalElems[1]);
@@ -82,6 +96,8 @@ public class DoubleBus extends Bus {
                         additionalElems = new TriangularDoors(number);
                         break;
                 }
+                listConfig.add(argsAdditionalElems[0]);
+                listConfig.add(number);
             }
         }
     }
@@ -165,10 +181,10 @@ public class DoubleBus extends Bus {
         if (seats != other.seats) {
             return false;
         }
-        if (mainColor != other.mainColor) {
+        if (mainColor.getRGB() != other.mainColor.getRGB()) {
             return false;
         }
-        if (additionalColor != other.additionalColor) {
+        if (additionalColor.getRGB() != other.additionalColor.getRGB()) {
             return false;
         }
         if (hasAdditionalDoor != other.hasAdditionalDoor) {
@@ -192,7 +208,7 @@ public class DoubleBus extends Bus {
     @Override
     public int compareTo(Bus bus) {
         DoubleBus doubleBus = (DoubleBus) bus;
-        if (additionalColor != doubleBus.additionalColor) {
+        if (additionalColor.getRGB() != doubleBus.additionalColor.getRGB()) {
             return Integer.compare(additionalColor.getRGB(), doubleBus.getAdditionalColor().getRGB());
         }
         if (hasAdditionalDoor != doubleBus.hasAdditionalDoor) {
