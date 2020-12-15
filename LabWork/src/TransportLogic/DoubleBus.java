@@ -2,7 +2,7 @@ package TransportLogic;
 
 import java.awt.*;
 
-public class DoubleBus extends Bus{
+public class DoubleBus extends Bus {
     public Color additionalColor;
     public boolean hasSecondFloor;
     public boolean hasAdditionalDoor;
@@ -68,8 +68,7 @@ public class DoubleBus extends Bus{
             hasSecondFloor = Boolean.parseBoolean(args[7]);
             if (args[8].contains("null")) {
                 additionalElems = null;
-            }
-            else {
+            } else {
                 String[] argsAdditionalElems = args[8].split("\\.");
                 int number = Integer.parseInt(argsAdditionalElems[1]);
                 switch (argsAdditionalElems[0]) {
@@ -108,7 +107,7 @@ public class DoubleBus extends Bus{
 
             //Окна 2-го этажа
             g.setColor(Color.BLACK);
-            g.fillRect(startPosX + 2,startPosY + 10, 20, 10);
+            g.fillRect(startPosX + 2, startPosY + 10, 20, 10);
             g.fillRect(startPosX + 32, startPosY + 10, 20, 10);
             g.fillRect(startPosX + 62, startPosY + 10, 20, 10);
             g.fillRect(startPosX + 92, startPosY + 10, 14, 10);
