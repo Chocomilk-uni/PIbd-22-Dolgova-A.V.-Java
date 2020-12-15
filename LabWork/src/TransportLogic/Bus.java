@@ -29,8 +29,7 @@ public class Bus extends PublicTransport implements Comparable<Bus> {
 
     public Bus(String info) {
         String[] args = info.split(separator);
-        if (args.length == 4)
-        {
+        if (args.length == 4) {
             averageSpeed = Integer.parseInt(args[0]);
             weight = Float.parseFloat(args[1]);
             seats = Integer.parseInt(args[2]);
@@ -38,14 +37,13 @@ public class Bus extends PublicTransport implements Comparable<Bus> {
         }
     }
 
-    public Bus() { }
+    public Bus() {
+    }
 
     @Override
-    public void moveTransport(Direction direction)
-    {
+    public void moveTransport(Direction direction) {
         float step = averageSpeed * 100 / weight;
-        switch (direction)
-        {
+        switch (direction) {
             case Right:
                 if (startPosX + step < pictureWidth - busWidth) {
                     startPosX += step;
@@ -70,8 +68,7 @@ public class Bus extends PublicTransport implements Comparable<Bus> {
     }
 
     @Override
-    public void drawTransport(Graphics g)
-    {
+    public void drawTransport(Graphics g) {
         //Колёса
         g.setColor(Color.BLACK);
         g.fillOval(startPosX + 10, startPosY + 60, 22, 22);
