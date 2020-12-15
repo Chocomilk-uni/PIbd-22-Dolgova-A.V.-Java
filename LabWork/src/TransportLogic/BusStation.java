@@ -24,24 +24,22 @@ public class BusStation<T extends Transport, H extends AdditionalElems> {
     }
 
     //Метод, заменяющий перегруженный оператор сложения в лабораторной на C#
-    public boolean add(T bus) {
-        if (places.size() < maxCount)
-        {
-            places.add(bus);
-            return true;
+    public boolean add(T bus) throws BusStationOverflowException {
+        if (places.size() >= maxCount) {
+            throw new BusStationOverflowException();
         }
-        return false;
+        places.add(bus);
+        return true;
     }
 
     //Метод, заменяющий перегруженный оператор вычитания в лабораторной на C#
-    public T remove(int index) {
-        if (index >= 0 && index < maxCount && places.get(index) != null)
-        {
-            T truck = places.get(index);
-            places.remove(index);
-            return truck;
+    public T remove(int index) throws BusStationPlaceNotFoundException {
+        if (index < 0 || index >= places.size()) {
+            throw new BusStationPlaceNotFoundException(index);
         }
-        return null;
+        T truck = places.get(index);
+        places.remove(index);
+        return truck;
     }
 
     //Подсчёт занятых мест
@@ -72,8 +70,7 @@ public class BusStation<T extends Transport, H extends AdditionalElems> {
         drawMarking(g);
         g.setStroke(new BasicStroke(1));
 
-        for (int i = 0; i < places.size(); i++)
-        {
+        for (int i = 0; i < places.size(); i++) {
             places.get(i).setPosition(margin + placeSizeWidth * (i / rowsNumber), margin + placeSizeHeight * (i % rowsNumber), pictureWidth, pictureHeight);
             places.get(i).drawTransport(g);
         }
@@ -85,7 +82,7 @@ public class BusStation<T extends Transport, H extends AdditionalElems> {
             for (int j = 0; j < pictureHeight / placeSizeHeight + 1; j++) {
                 g.drawLine(i * placeSizeWidth, j * placeSizeHeight, i * placeSizeWidth + placeSizeWidth / 2, j * placeSizeHeight);
             }
-            g.drawLine(i * placeSizeWidth,0, i * placeSizeWidth, (pictureHeight / placeSizeHeight) * placeSizeHeight);
+            g.drawLine(i * placeSizeWidth, 0, i * placeSizeWidth, (pictureHeight / placeSizeHeight) * placeSizeHeight);
         }
     }
 

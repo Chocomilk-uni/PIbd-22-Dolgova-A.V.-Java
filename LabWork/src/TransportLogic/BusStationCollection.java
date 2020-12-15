@@ -1,9 +1,8 @@
 package TransportLogic;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
+import java.nio.file.FileAlreadyExistsException;
+import java.security.KeyException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
@@ -55,7 +54,7 @@ public class BusStationCollection {
         return null;
     }
 
-    public boolean saveData(String filename) {
+    public void saveData(String filename) throws IOException {
         if (!filename.contains(".txt")) {
             filename += ".txt";
         }
@@ -74,22 +73,20 @@ public class BusStationCollection {
                     fileWriter.write(bus.toString() + '\n');
                 }
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
-        return true;
     }
 
-    public boolean loadData(String filename) {
+
+    public void loadData(String filename) throws IllegalArgumentException, IOException, BusStationOverflowException {
         if (!(new File(filename).exists())) {
-            return false;
+            throw new FileNotFoundException("Файл не найден");
         }
         try (FileReader fileReader = new FileReader(filename)) {
             Scanner scanner = new Scanner(fileReader);
             if (scanner.nextLine().contains("BusStationCollection")) {
                 busStationStages.clear();
             } else {
-                return false;
+                throw new IllegalArgumentException("Неверный формат файла");
             }
 
             Bus bus = null;
@@ -108,17 +105,14 @@ public class BusStationCollection {
                         bus = new Bus(line.split(separator)[1]);
                     }
                     if (!(busStationStages.get(key).add(bus))) {
-                        return false;
+                        throw new BusStationOverflowException();
                     }
                 }
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
-        return true;
     }
 
-    public boolean saveBusStation(String filename, String key) {
+    public void saveBusStation(String filename, String key) throws IOException, KeyException {
         if (busStationStages.containsKey(key)) {
             if (!filename.contains(".txt")) {
                 filename += ".txt";
@@ -135,15 +129,11 @@ public class BusStationCollection {
                     }
                     fileWriter.write(bus.toString() + '\n');
                 }
-            } catch (IOException e) {
-                e.printStackTrace();
             }
-            return true;
-        }
-        return false;
+        } else throw new KeyException();
     }
 
-    public boolean loadBusStation(String filename) {
+    public void loadBusStation(String filename) throws BusStationOverflowException, IllegalArgumentException, IOException {
         try (FileReader fileReader = new FileReader(filename)) {
             Scanner scanner = new Scanner(fileReader);
             String key;
@@ -158,7 +148,7 @@ public class BusStationCollection {
                     busStationStages.put(key, new BusStation<>(pictureWidth, pictureHeight));
                 }
             } else {
-                return false;
+                throw new IllegalArgumentException("Неверный формат файла");
             }
 
             Bus bus = null;
@@ -171,13 +161,10 @@ public class BusStationCollection {
                         bus = new Bus(line.split(separator)[1]);
                     }
                     if (!(busStationStages.get(key).add(bus))) {
-                        return false;
+                        throw new BusStationOverflowException();
                     }
                 }
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
-        return true;
     }
 }
