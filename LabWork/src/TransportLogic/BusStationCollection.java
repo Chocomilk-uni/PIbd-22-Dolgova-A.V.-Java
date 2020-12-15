@@ -77,7 +77,7 @@ public class BusStationCollection {
     }
 
 
-    public void loadData(String filename) throws IllegalArgumentException, IOException, BusStationOverflowException {
+    public void loadData(String filename) throws IllegalArgumentException, IOException, BusStationOverflowException, BusStationAlreadyHaveException {
         if (!(new File(filename).exists())) {
             throw new FileNotFoundException("Файл не найден");
         }
@@ -133,7 +133,7 @@ public class BusStationCollection {
         } else throw new KeyException();
     }
 
-    public void loadBusStation(String filename) throws BusStationOverflowException, IllegalArgumentException, IOException {
+    public void loadBusStation(String filename) throws BusStationOverflowException, IllegalArgumentException, IOException, BusStationAlreadyHaveException {
         try (FileReader fileReader = new FileReader(filename)) {
             Scanner scanner = new Scanner(fileReader);
             String key;

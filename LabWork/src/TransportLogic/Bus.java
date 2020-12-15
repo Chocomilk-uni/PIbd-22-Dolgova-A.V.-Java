@@ -2,7 +2,7 @@ package TransportLogic;
 
 import java.awt.*;
 
-public class Bus extends PublicTransport {
+public class Bus extends PublicTransport implements Comparable<Bus> {
     //Размеры автобуса
     protected int busHeight = 60;
     protected int busWidth = 100;
@@ -97,5 +97,55 @@ public class Bus extends PublicTransport {
 
     public String toString() {
         return averageSpeed + separator + weight + separator + seats + separator + mainColor.getRGB();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (!(obj instanceof Bus busObject)) {
+            return false;
+        }
+        return equals(busObject);
+    }
+
+    public boolean equals(Bus other) {
+        if (other == null) {
+            return false;
+        }
+        if (!this.getClass().getSimpleName().equals(other.getClass().getSimpleName())) {
+            return false;
+        }
+        if (averageSpeed != other.averageSpeed) {
+            return false;
+        }
+        if (weight != other.weight) {
+            return false;
+        }
+        if (seats != other.seats) {
+            return false;
+        }
+        if (mainColor != other.mainColor) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public int compareTo(Bus bus) {
+        if (averageSpeed != bus.averageSpeed) {
+            return Integer.compare(averageSpeed, bus.averageSpeed);
+        }
+        if (weight != bus.weight) {
+            return Float.compare(weight, bus.weight);
+        }
+        if (seats != bus.seats) {
+            return Integer.compare(seats, bus.seats);
+        }
+        if (mainColor != bus.mainColor) {
+            return Integer.compare(mainColor.getRGB(), bus.getMainColor().getRGB());
+        }
+        return 0;
     }
 }

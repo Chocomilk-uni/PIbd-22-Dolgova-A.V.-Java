@@ -1,10 +1,10 @@
 package TransportLogic;
 
 import java.awt.*;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
 
-public class BusStation<T extends Transport, H extends AdditionalElems> {
+public class BusStation<T extends Transport, H extends AdditionalElems> implements Iterator<T>, Iterable<T>{
     private final List<T> places;
     private final int maxCount;
 
@@ -14,20 +14,25 @@ public class BusStation<T extends Transport, H extends AdditionalElems> {
     private final int placeSizeWidth = 230;
     private final int placeSizeHeight = 100;
 
+    private int currentIndex;
+
     public BusStation(int pictureWidth, int pictureHeight) {
         int columnsNumber = pictureWidth / placeSizeWidth;
         int rowsNumber = pictureHeight / placeSizeHeight;
         maxCount = columnsNumber * rowsNumber;
+        currentIndex = -1;
         places = new ArrayList<>();
         this.pictureWidth = pictureWidth;
         this.pictureHeight = pictureHeight;
     }
 
     //Метод, заменяющий перегруженный оператор сложения в лабораторной на C#
-    public boolean add(T bus) throws BusStationOverflowException{
-        if (places.size() >= maxCount)
-        {
-           throw new BusStationOverflowException();
+    public boolean add(T bus) throws BusStationOverflowException, BusStationAlreadyHaveException {
+        if (places.size() >= maxCount) {
+            throw new BusStationOverflowException();
+        }
+        if (places.contains(bus)) {
+            throw new BusStationAlreadyHaveException();
         }
         places.add(bus);
         return true;
@@ -35,8 +40,7 @@ public class BusStation<T extends Transport, H extends AdditionalElems> {
 
     //Метод, заменяющий перегруженный оператор вычитания в лабораторной на C#
     public T remove(int index) throws BusStationPlaceNotFoundException{
-        if (index < 0 || index >= places.size())
-        {
+        if (index < 0 || index >= places.size()) {
             throw new BusStationPlaceNotFoundException(index);
         }
         T truck = places.get(index);
@@ -99,5 +103,35 @@ public class BusStation<T extends Transport, H extends AdditionalElems> {
 
     public void clear() {
         places.clear();
+    }
+
+    public void sort() {
+        places.sort((Comparator<? super T>) new BusComparer());
+    }
+
+    @Override
+    public boolean hasNext() {
+        return currentIndex < places.size() - 1;
+    }
+
+    @Override
+    public T next() {
+        if (!hasNext()) {
+            throw new NoSuchElementException();
+        }
+        currentIndex++;
+        return places.get(currentIndex);
+    }
+
+    @Override
+    public Iterator<T> iterator() {
+        currentIndex = -1;
+        return this;
+    }
+
+    public void printInfo() {
+        for (T truck : places) {
+            System.out.println(truck);
+        }
     }
 }
