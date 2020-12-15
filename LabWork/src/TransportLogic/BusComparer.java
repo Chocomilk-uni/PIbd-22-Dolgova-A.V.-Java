@@ -6,16 +6,21 @@ public class BusComparer implements Comparator<PublicTransport> {
 
     @Override
     public int compare(PublicTransport x, PublicTransport y) {
-        if (!(x.getClass().getSimpleName().equals(y.getClass().getSimpleName()))) {
+        if (!x.getClass().getSimpleName().equals(y.getClass().getSimpleName())) {
             return x.getClass().getSimpleName().compareTo(y.getClass().getSimpleName());
         }
-        if (x instanceof DoubleBus && y instanceof DoubleBus) {
-            return comparerDoubleBus((DoubleBus) x, (DoubleBus) y);
+        int result;
+        switch (x.getClass().getSimpleName()) {
+            case "Bus" -> {
+                result = comparerBus((Bus) x, (Bus) y);
+                return result;
+            }
+            case "DoubleBus" -> {
+                result = comparerDoubleBus((DoubleBus) x, (DoubleBus) y);
+                return result;
+            }
         }
-        if (x instanceof Bus && y instanceof Bus) {
-            return comparerBus((Bus) x, (Bus) y);
-        }
-        return 0;
+        return 100;
     }
 
     private int comparerBus(Bus x, Bus y) {
@@ -26,7 +31,7 @@ public class BusComparer implements Comparator<PublicTransport> {
             return Float.compare(x.getWeight(), y.getWeight());
         }
         if (x.getSeats() != y.getSeats()) {
-            return Float.compare(x.getSeats(), y.getSeats());
+            return Integer.compare(x.getSeats(), y.getSeats());
         }
         if (x.getMainColor() != y.getMainColor()) {
             return Integer.compare(x.getMainColor().getRGB(), y.getMainColor().getRGB());
@@ -36,7 +41,7 @@ public class BusComparer implements Comparator<PublicTransport> {
 
     private int comparerDoubleBus(DoubleBus x, DoubleBus y) {
         int result = comparerBus(x, y);
-        if (result != 0) {
+        if (result == 0) {
             return result;
         }
 
