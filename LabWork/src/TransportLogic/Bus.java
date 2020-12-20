@@ -160,7 +160,6 @@ public class Bus extends PublicTransport implements Iterator<Object>, Iterable<O
         return 0;
     }
 
-
     @Override
     public Iterator<Object> iterator() {
         currentIndex = -1;
