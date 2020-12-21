@@ -1,8 +1,9 @@
 package TransportLogic;
 
 import java.awt.*;
+import java.util.Iterator;
 
-public class DoubleBus extends Bus {
+public class DoubleBus extends Bus implements Iterator<Object>, Iterable<Object>, Comparable<Bus> {
     public Color additionalColor;
     public boolean hasSecondFloor;
     public boolean hasAdditionalDoor;
@@ -50,24 +51,37 @@ public class DoubleBus extends Bus {
     public DoubleBus(int averageSpeed, float weight, int seats, Color mainColor, Color additColor, boolean hasFrontPlatform, boolean hasAdditionalDoor, boolean hasSecondFloor) {
         super(averageSpeed, weight, seats, mainColor);
         this.additionalColor = additColor;
+        listConfig.add(additColor);
         this.hasAdditionalDoor = hasAdditionalDoor;
+        listConfig.add(hasAdditionalDoor);
         this.hasFrontPlatform = hasFrontPlatform;
+        listConfig.add(hasFrontPlatform);
         this.hasSecondFloor = hasSecondFloor;
+        listConfig.add(hasSecondFloor);
     }
 
     public DoubleBus(String info) {
         String[] args = info.split(separator);
         if (args.length == 9) {
             averageSpeed = Integer.parseInt(args[0]);
+            listConfig.add(averageSpeed);
             weight = Float.parseFloat(args[1]);
+            listConfig.add(weight);
             seats = Integer.parseInt(args[2]);
+            listConfig.add(seats);
             mainColor = new Color(Integer.parseInt(args[3]));
+            listConfig.add(mainColor);
             additionalColor = new Color(Integer.parseInt(args[4]));
+            listConfig.add(additionalColor);
             hasAdditionalDoor = Boolean.parseBoolean(args[5]);
+            listConfig.add(hasAdditionalDoor);
             hasFrontPlatform = Boolean.parseBoolean(args[6]);
+            listConfig.add(hasFrontPlatform);
             hasSecondFloor = Boolean.parseBoolean(args[7]);
+            listConfig.add(hasSecondFloor);
             if (args[8].contains("null")) {
                 additionalElems = null;
+                listConfig.add(additionalElems);
             } else {
                 String[] argsAdditionalElems = args[8].split("\\.");
                 int number = Integer.parseInt(argsAdditionalElems[1]);
@@ -82,6 +96,8 @@ public class DoubleBus extends Bus {
                         additionalElems = new TriangularDoors(number);
                         break;
                 }
+                listConfig.add(argsAdditionalElems[0]);
+                listConfig.add(number);
             }
         }
     }
@@ -136,5 +152,84 @@ public class DoubleBus extends Bus {
                 mainColor.getRGB() + separator + additionalColor.getRGB() + separator +
                 hasAdditionalDoor + separator + hasFrontPlatform + separator + hasSecondFloor +
                 separator + additionalElems;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (!(obj instanceof DoubleBus doubleBusObject)) {
+            return false;
+        }
+        return equals(doubleBusObject);
+    }
+
+    public boolean equals(DoubleBus other) {
+        if (other == null) {
+            return false;
+        }
+        if (!this.getClass().getSimpleName().equals(other.getClass().getSimpleName())) {
+            return false;
+        }
+        if (averageSpeed != other.averageSpeed) {
+            return false;
+        }
+        if (weight != other.weight) {
+            return false;
+        }
+        if (seats != other.seats) {
+            return false;
+        }
+        if (mainColor.getRGB() != other.mainColor.getRGB()) {
+            return false;
+        }
+        if (additionalColor.getRGB() != other.additionalColor.getRGB()) {
+            return false;
+        }
+        if (hasAdditionalDoor != other.hasAdditionalDoor) {
+            return false;
+        }
+        if (hasFrontPlatform != other.hasFrontPlatform) {
+            return false;
+        }
+        if (hasSecondFloor != other.hasSecondFloor) {
+            return false;
+        }
+        if (additionalElems != null && other.additionalElems != null && !(additionalElems.toString().equals(other.additionalElems.toString()))) {
+            return false;
+        }
+        if ((additionalElems == null && other.additionalElems != null) || (additionalElems != null && other.additionalElems == null)) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public int compareTo(Bus bus) {
+        DoubleBus doubleBus = (DoubleBus) bus;
+        if (additionalColor.getRGB() != doubleBus.additionalColor.getRGB()) {
+            return Integer.compare(additionalColor.getRGB(), doubleBus.getAdditionalColor().getRGB());
+        }
+        if (hasAdditionalDoor != doubleBus.hasAdditionalDoor) {
+            return Boolean.compare(hasAdditionalDoor, doubleBus.hasAdditionalDoor);
+        }
+        if (hasFrontPlatform != doubleBus.hasFrontPlatform) {
+            return Boolean.compare(hasFrontPlatform, doubleBus.hasFrontPlatform);
+        }
+        if (hasSecondFloor != doubleBus.hasSecondFloor) {
+            return Boolean.compare(hasSecondFloor, doubleBus.hasSecondFloor);
+        }
+        if (additionalElems == null && doubleBus.additionalElems != null) {
+            return 1;
+        }
+        if (additionalElems != null && doubleBus.additionalElems == null) {
+            return -1;
+        }
+        return 0;
+    }
+
+    public AdditionalElems getAdditionalElems() {
+        return  additionalElems;
     }
 }

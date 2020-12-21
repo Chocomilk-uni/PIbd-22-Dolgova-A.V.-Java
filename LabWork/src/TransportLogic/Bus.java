@@ -1,14 +1,20 @@
 package TransportLogic;
 
 import java.awt.*;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.NoSuchElementException;
 
-public class Bus extends PublicTransport {
+public class Bus extends PublicTransport implements Iterator<Object>, Iterable<Object>, Comparable<Bus> {
     //Размеры автобуса
     protected int busHeight = 60;
     protected int busWidth = 100;
     protected double changeHeight = 1.4;
 
     protected String separator = ";";
+
+    protected LinkedList<Object> listConfig = new LinkedList<>();
+    protected int currentIndex = -1;
 
     public Bus(int averageSpeed, float weight, int seats, Color mainColor) {
         this.averageSpeed = averageSpeed;
@@ -19,9 +25,13 @@ public class Bus extends PublicTransport {
 
     protected Bus(int averageSpeed, float weight, int seats, Color mainColor, int busHeight, int busWidth, double changeHeight) {
         this.averageSpeed = averageSpeed;
+        listConfig.add(averageSpeed);
         this.weight = weight;
+        listConfig.add(weight);
         this.seats = seats;
+        listConfig.add(seats);
         this.mainColor = mainColor;
+        listConfig.add(mainColor);
         this.busHeight = busHeight;
         this.busWidth = busWidth;
         this.changeHeight = changeHeight;
@@ -31,9 +41,13 @@ public class Bus extends PublicTransport {
         String[] args = info.split(separator);
         if (args.length == 4) {
             averageSpeed = Integer.parseInt(args[0]);
+            listConfig.add(averageSpeed);
             weight = Float.parseFloat(args[1]);
+            listConfig.add(weight);
             seats = Integer.parseInt(args[2]);
+            listConfig.add(seats);
             mainColor = new Color(Integer.parseInt(args[3]));
+            listConfig.add(mainColor);
         }
     }
 
@@ -94,5 +108,75 @@ public class Bus extends PublicTransport {
 
     public String toString() {
         return averageSpeed + separator + weight + separator + seats + separator + mainColor.getRGB();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (!(obj instanceof Bus busObject)) {
+            return false;
+        }
+        return equals(busObject);
+    }
+
+    public boolean equals(Bus other) {
+        if (other == null) {
+            return false;
+        }
+        if (!this.getClass().getSimpleName().equals(other.getClass().getSimpleName())) {
+            return false;
+        }
+        if (averageSpeed != other.averageSpeed) {
+            return false;
+        }
+        if (weight != other.weight) {
+            return false;
+        }
+        if (seats != other.seats) {
+            return false;
+        }
+        if (mainColor.getRGB() != other.mainColor.getRGB()) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public int compareTo(Bus bus) {
+        if (averageSpeed != bus.averageSpeed) {
+            return Integer.compare(averageSpeed, bus.averageSpeed);
+        }
+        if (weight != bus.weight) {
+            return Float.compare(weight, bus.weight);
+        }
+        if (seats != bus.seats) {
+            return Integer.compare(seats, bus.seats);
+        }
+        if (mainColor.getRGB() != bus.mainColor.getRGB()) {
+            return Integer.compare(mainColor.getRGB(), bus.getMainColor().getRGB());
+        }
+        return 0;
+    }
+
+    @Override
+    public Iterator<Object> iterator() {
+        currentIndex = -1;
+        return listConfig.iterator();
+    }
+
+    @Override
+    public boolean hasNext() {
+        return (currentIndex + 1 < listConfig.size());
+    }
+
+    @Override
+    public Object next() {
+        if (!hasNext()) {
+            throw new NoSuchElementException();
+        }
+        currentIndex++;
+        return listConfig.get(currentIndex);
     }
 }

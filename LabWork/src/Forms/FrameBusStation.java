@@ -45,6 +45,7 @@ public class FrameBusStation {
 
         panelBusStation = new PanelBusStation(busStationCollection);
         JButton buttonParkBus = new JButton("Припарковать автобус");
+        JButton buttonSort = new JButton("Сортировать");
         JLabel labelPlace = new JLabel("Место:");
         JButton buttonAddToQueue = new JButton("Добавить в очередь");
         JButton buttonGetFromQueue = new JButton("Получить из очереди");
@@ -65,6 +66,7 @@ public class FrameBusStation {
         JButton buttonDeleteBusStatiom = new JButton("Удалить автовокзал");
 
         frame.getContentPane().add(buttonParkBus);
+        frame.getContentPane().add(buttonSort);
         frame.getContentPane().add(panelBusStation);
 
         groupBoxPickBus.add(textFieldPlaceNumber);
@@ -81,7 +83,8 @@ public class FrameBusStation {
         frame.getContentPane().add(groupBoxBusStation);
 
         panelBusStation.setBounds(5, 5, 650, 450);
-        buttonParkBus.setBounds(670, 265, 200, 40);
+        buttonParkBus.setBounds(670, 240, 200, 30);
+        buttonSort.setBounds(670, 275, 200, 30);
 
         groupBoxBusStation.setLayout(null);
         groupBoxBusStation.setBounds(670, 10, 200, 240);
@@ -114,6 +117,7 @@ public class FrameBusStation {
         menu.add(menuBusStation);
 
         buttonParkBus.addActionListener(e -> parkBus());
+        buttonSort.addActionListener(e -> sort());
         buttonAddToQueue.addActionListener(e -> pickBus());
         buttonGetFromQueue.addActionListener(e -> getBus());
         buttonAddBusStation.addActionListener(e -> addBusStation());
@@ -129,25 +133,27 @@ public class FrameBusStation {
 
     private void parkBus() {
         if (listBoxBusStation.getSelectedValue() == null) {
-            JOptionPane.showMessageDialog(frame, "Автовокзал не выбран", "Ошибка", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(frame, "Гараж не выбран", "Ошибка", JOptionPane.ERROR_MESSAGE);
             return;
         }
         try {
             PanelBusConfig configPanel = new PanelBusConfig(frame);
-
-            //Получаем автобус из панельки диалогового окна
             Bus bus = configPanel.getBus();
-
-            if (bus == null) return;
+            if (bus == null) {
+                return;
+            }
             if (busStationCollection.get(listBoxBusStation.getSelectedValue()).add(bus)) {
                 logger.info("На автовокзал " + listBoxBusStation.getSelectedValue() + " был добавлен автобус " + bus);
                 frame.repaint();
             }
         } catch (BusStationOverflowException e) {
-            JOptionPane.showMessageDialog(frame, "Автовокзал переполнен", "Ошибка", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(frame, e.getMessage(), "Переполнение автовокзала", JOptionPane.ERROR_MESSAGE);
+            logger.warn(e.getMessage());
+        } catch (BusStationAlreadyHaveException e) {
+            JOptionPane.showMessageDialog(frame, e.getMessage(), "Дублирование", JOptionPane.ERROR_MESSAGE);
             logger.warn(e.getMessage());
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(frame, "Неизвестная ошибка", "Ошибка", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(frame, e.getMessage(), "Неизвестная ошибка", JOptionPane.ERROR_MESSAGE);
             logger.fatal(e.getMessage());
         }
     }
@@ -277,7 +283,12 @@ public class FrameBusStation {
             } catch (BusStationOverflowException e) {
                 JOptionPane.showMessageDialog(frame, e.getMessage(), "Переполнение автовокзала", JOptionPane.ERROR_MESSAGE);
                 logger.warn(e.getMessage());
-            } catch (FileNotFoundException e) {
+            }
+            catch (BusStationAlreadyHaveException e) {
+                JOptionPane.showMessageDialog(frame, e.getMessage(), "Дублирование", JOptionPane.ERROR_MESSAGE);
+                logger.warn(e.getMessage());
+            }
+            catch (FileNotFoundException e) {
                 JOptionPane.showMessageDialog(frame, e.getMessage(), "Файл не найден", JOptionPane.ERROR_MESSAGE);
                 logger.error(e.getMessage());
             } catch (IllegalArgumentException e) {
@@ -331,7 +342,12 @@ public class FrameBusStation {
             } catch (BusStationOverflowException e) {
                 JOptionPane.showMessageDialog(frame, e.getMessage(), "Переполнение автовокзала", JOptionPane.ERROR_MESSAGE);
                 logger.warn(e.getMessage());
-            } catch (FileNotFoundException e) {
+            }
+            catch (BusStationAlreadyHaveException e) {
+                JOptionPane.showMessageDialog(frame, e.getMessage(), "Дублирование", JOptionPane.ERROR_MESSAGE);
+                logger.warn(e.getMessage());
+            }
+            catch (FileNotFoundException e) {
                 JOptionPane.showMessageDialog(frame, e.getMessage(), "Файл не найден", JOptionPane.ERROR_MESSAGE);
                 logger.error(e.getMessage());
             } catch (IllegalArgumentException e) {
@@ -342,5 +358,15 @@ public class FrameBusStation {
                 logger.fatal(e.getMessage());
             }
         }
+    }
+
+    private void sort() {
+        if (listBoxBusStation.getSelectedValue() == null) {
+            JOptionPane.showMessageDialog(frame, "Перед сортировкой необходимо выбрать автовокзал", "Ошибка", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        busStationCollection.get(listBoxBusStation.getSelectedValue()).sort();
+        frame.repaint();
+        logger.info("Автобусы на автовокзале " + listBoxBusStation.getSelectedValue() + " отсортированы");
     }
 }
